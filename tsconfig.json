@@ -1,0 +1,35 @@
+{
+    "version": "1.4.1",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "outDir": "./lib"
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "./example/server.ts",
+        "./src/adapters/ExpressAdapter.ts",
+        "./src/core.ts",
+        "./src/decorators.ts",
+        "./src/index.ts",
+        "./src/interfaces.ts",
+        "./src/internal.ts",
+        "./test/adapters/ExpressAdapter.spec.ts",
+        "./test/core.spec.ts",
+        "./test/decorators.spec.ts",
+        "./test/internal.spec.ts",
+        "./typings/body-parser/body-parser.d.ts",
+        "./typings/express/express.d.ts",
+        "./typings/mocha/mocha.d.ts",
+        "./typings/node/node.d.ts",
+        "./typings/sinon/sinon.d.ts",
+        "./typings/tsd.d.ts"
+    ]
+}

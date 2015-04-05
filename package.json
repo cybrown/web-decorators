@@ -1,0 +1,48 @@
+{
+  "name": "web-decorators",
+  "version": "0.0.1",
+  "description": "Web framework - optionally backed by express - with a decorator based API",
+  "main": "index.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "dependencies": {
+    "body-parser": "^1.12.2",
+    "express": "^4.12.3",
+    "sinon": "^1.14.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.12.2",
+    "express": "^4.12.3",
+    "mocha": "^2.2.1",
+    "sinon": "^1.14.1",
+    "tsd": "^0.5.7",
+    "typescript": "^1.5.0-alpha"
+  },
+  "scripts": {
+    "test": "mocha lib/test --recursive",
+    "build": "tsc",
+    "postinstall": "tsd reinstall"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cybrown/web-decorators.git"
+  },
+  "keywords": [
+    "web",
+    "framework",
+    "decorator",
+    "es6",
+    "es7",
+    "typescript",
+    "express",
+    "annotation"
+  ],
+  "author": "Cy Brown",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cybrown/web-decorators/issues"
+  },
+  "homepage": "https://github.com/cybrown/web-decorators"
+}
