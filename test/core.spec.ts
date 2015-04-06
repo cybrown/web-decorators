@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as core from '../src/core';
-import {ParameterType} from '../src/interfaces';
+import {ParameterType, SendType} from '../src/interfaces';
 
 describe ('Core', () => {
 
@@ -199,6 +199,32 @@ describe ('Core', () => {
                 assert(sendSpy.calledWith('async result', adapterRequestData));
                 done();
             }, 20);
+        });
+
+        it.only ('should call the json send method if the method is decorated with @SendJson', () => {
+            const sendJsonSpy = sinon.spy();
+            const adapter = {
+                sendJson: sendJsonSpy
+            };
+            function FooClass() {}
+            const totoSpy = sinon.stub().returns('sync result');
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                },
+                sendTypes: {
+                    toto: SendType.JSON
+                }
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            assert(totoSpy.calledOn(controller));
+            assert(totoSpy.calledOnce);
+            assert(sendJsonSpy.calledOnce);
+            assert(sendJsonSpy.calledWith('sync result', adapterRequestData));
         });
     });
 });
