@@ -38,6 +38,7 @@ export interface IQueryParameter extends IParameterConfiguration {
 export interface IAdapter {
     addMiddleware(path: string, controller: any, handler: Function);
     addRoute(configuration: IControllerConfiguration, method: string, path: string, controller: any, methodName: string, handler: Function);
+    getParameterWithConfig (paramConfig: IParameterConfiguration, adapterRequestData: any);
 }
 
 export interface IControllerConfiguration {

@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as express from 'express';
 import ExpressAdapter from '../../src/adapters/ExpressAdapter';
+import {ParameterType} from '../../src/interfaces';
 
 describe ('ExpressAdapter', () => {
 
@@ -46,6 +47,84 @@ describe ('ExpressAdapter', () => {
             adapter.addRoute(configuration, 'get', '/path', controller, 'index', function () {});
             assert(getSpy.calledOnce);
             assert(getSpy.calledWith('/path', sinon.match.func));
+        });
+    });
+
+    describe ('getParameterWithConfig', () => {
+
+        it ('should get a PATH_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType.PATH_PARAMETER,
+                name: 'toto'
+            };
+            const adapterRequestData = {
+                req: {
+                    params: {
+                        toto: 'value'
+                    }
+                }
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, 'value');
+        });
+
+        it ('should get a RES_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType.RES_PARAMETER
+            };
+            const responseObject = {key: 'response'};
+            const adapterRequestData = {
+                res: responseObject
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, responseObject);
+        });
+
+        it ('should get a REQ_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType.REQ_PARAMETER
+            };
+            const requestObject = {key: 'request'};
+            const adapterRequestData = {
+                req: requestObject
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, requestObject);
+        });
+
+        it ('should get a BODY_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType. BODY_PARAMETER
+            };
+            const bodyObject = {key: 'body'};
+            const adapterRequestData = {
+                req: {
+                    body: bodyObject
+                }
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, bodyObject);
+        });
+
+        it ('should get a QUERY_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType.QUERY_PARAMETER,
+                name: 'toto'
+            };
+            const adapterRequestData = {
+                req: {
+                    query: {
+                        toto: 'value'
+                    }
+                }
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, 'value');
         });
     });
 });

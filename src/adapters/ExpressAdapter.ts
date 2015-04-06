@@ -1,5 +1,11 @@
 import * as express from 'express';
 import {IAdapter, IControllerConfiguration, ParameterType, IParameterConfiguration, IPathParameter, IQueryParameter} from '../interfaces';
+import {createParameterList} from '../core';
+
+export interface ExpressAdapterData {
+    req: express.Request;
+    res: express.Response;
+}
 
 export default class ExpressAdapter implements IAdapter {
 
@@ -21,33 +27,23 @@ export default class ExpressAdapter implements IAdapter {
         });
     }
 
-    getParameterWithConfig (paramConfig: IParameterConfiguration, req: express.Request, res: express.Response) {
+    getParameterWithConfig (paramConfig: IParameterConfiguration, adapterRequestData: ExpressAdapterData) {
         switch (paramConfig.type) {
             case ParameterType.PATH_PARAMETER:
-                return req.params[(<IPathParameter>paramConfig).name];
+                return adapterRequestData.req.params[(<IPathParameter>paramConfig).name];
                 break;
             case ParameterType.RES_PARAMETER:
-                return res;
+                return adapterRequestData.res;
                 break;
             case ParameterType.REQ_PARAMETER:
-                return req;
+                return adapterRequestData.req;
                 break;
             case ParameterType.BODY_PARAMETER:
-                return req.body;
+                return adapterRequestData.req.body;
                 break;
             case ParameterType.QUERY_PARAMETER:
-                return req.query[(<IQueryParameter>paramConfig).name];
+                return adapterRequestData.req.query[(<IQueryParameter>paramConfig).name];
                 break;
         }
-    }
-
-    private createParameterList(config: IControllerConfiguration, methodName: string, req: express.Request, res: express.Response) {
-        const parameters = [];
-        if (config.methodsParameters[methodName]) {
-            config.methodsParameters[methodName].forEach(paramConfig => {
-                parameters[paramConfig.index] = this.getParameterWithConfig(paramConfig, req, res);
-            });
-        }
-        return parameters;
     }
 }

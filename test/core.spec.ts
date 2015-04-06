@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as core from '../src/core';
+import {ParameterType} from '../src/interfaces';
 
 describe ('Core', () => {
 
@@ -81,6 +82,35 @@ describe ('Core', () => {
             assert.equal(route.path, '/path');
             assert.equal(route.method, 'get');
             assert.equal(route.handlerName, 'path');
+        });
+    });
+
+    describe ('createParameterList', () => {
+
+        it ('should call getParameterWithConfig for each parameter configuration object', () => {
+            const getParameterWithConfigSpy = sinon.spy();
+            const adapter = <any>{
+                getParameterWithConfig: getParameterWithConfigSpy
+            };
+            const paramConfig1 = {
+                index: 0,
+                type: ParameterType.PATH_PARAMETER,
+                name: 'toto'
+            };
+            const paramConfig2 = {
+                index: 1,
+                type: ParameterType.REQ_PARAMETER
+            };
+            const config = <any>{
+                methodsParameters: {
+                    hello: [paramConfig1, paramConfig2]
+                }
+            };
+            const adapterRequestData = {key: 'value'};
+            core.createParameterList(adapter, config, 'hello', adapterRequestData);
+            assert(getParameterWithConfigSpy.calledTwice);
+            assert(getParameterWithConfigSpy.calledWith(paramConfig1, adapterRequestData));
+            assert(getParameterWithConfigSpy.calledWith(paramConfig2, adapterRequestData));
         });
     });
 });

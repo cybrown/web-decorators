@@ -25,6 +25,7 @@
         "./test/core.spec.ts",
         "./test/decorators.spec.ts",
         "./test/internal.spec.ts",
+        "./typings/bluebird/bluebird.d.ts",
         "./typings/body-parser/body-parser.d.ts",
         "./typings/express/express.d.ts",
         "./typings/mocha/mocha.d.ts",

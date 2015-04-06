@@ -1,4 +1,4 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration} from './interfaces';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter} from './interfaces';
 import {createPathWithRoot, applyConfiguration} from './internal';
 
 export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
@@ -43,4 +43,14 @@ export function methodDecoratorFactory(method: string): (path?: string) => Metho
             target.$$controllerConfiguration.routes.push({method, path, handlerName});
         };
     }
+}
+
+export function createParameterList(adapter: IAdapter, config: IControllerConfiguration, methodName: string, adapterRequestData: any) {
+    const parameters = [];
+    if (config.methodsParameters[methodName]) {
+        config.methodsParameters[methodName].forEach(paramConfig => {
+            parameters[paramConfig.index] = adapter.getParameterWithConfig(paramConfig, adapterRequestData);
+        });
+    }
+    return parameters;
 }
