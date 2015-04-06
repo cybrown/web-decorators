@@ -128,7 +128,8 @@ describe ('Core', () => {
             const configuration = {
                 methodsParameters: {
                     toto: []
-                }
+                },
+                sendTypes: {}
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
@@ -154,7 +155,8 @@ describe ('Core', () => {
             const configuration = {
                 methodsParameters: {
                     toto: []
-                }
+                },
+                sendTypes: {}
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
@@ -187,7 +189,8 @@ describe ('Core', () => {
             const configuration = {
                 methodsParameters: {
                     toto: []
-                }
+                },
+                sendTypes: {}
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
