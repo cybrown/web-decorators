@@ -50,6 +50,22 @@ describe ('ExpressAdapter', () => {
         });
     });
 
+    describe ('send', () => {
+
+        it ('should call send on response', () => {
+            const sendSpy = sinon.spy();
+            const data = {key: 'data'};
+            const adapterData = {
+                res: {
+                    send: sendSpy
+                }
+            };
+            adapter.send(data, <any>adapterData);
+            assert(sendSpy.calledOnce);
+            assert(sendSpy.calledWith(data));
+        })
+    });
+
     describe ('getParameterWithConfig', () => {
 
         it ('should get a PATH_PARAMETER', () => {

@@ -54,3 +54,14 @@ export function createParameterList(adapter: IAdapter, config: IControllerConfig
     }
     return parameters;
 }
+
+export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
+    const result = handler.apply(controller, createParameterList(this, configuration, handlerName, adapterRequestData));
+    if (result != null) {
+        if (typeof result.then === 'function') {
+            result.then(value => adapter.send(value, adapterRequestData));
+        } else {
+            adapter.send(result, adapterRequestData);
+        }
+    }
+}

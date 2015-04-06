@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import {Controller, Get, Post, Middle, Route, PathParam, ResParam, ReqParam, BodyParam, QueryParam} from '../src/decorators';
 import ExpressAdapter from '../src/adapters/ExpressAdapter';
+import * as Promise from 'bluebird';
 
 var app = express();
 app.use(bodyParser.json());
@@ -20,23 +21,32 @@ class Foo {
     }
 
     @Get()
-    index(@ReqParam() req, @ResParam() res) {
-        res.send('ok decorator');
+    index() {
+        return 'ok decorator';
+    }
+
+    @Get('/async')
+    asyncIndex () {
+        return new Promise<string>((resolve: (result: string) => void, reject) => {
+            setTimeout(() => {
+                resolve('async ok');
+            }, 2000);
+        });
     }
 
     @Get('/hello/:name')
-    hello (@ReqParam() req, @ResParam() res: express.Response, @PathParam("name") name: string) {
-        res.send(`Hello: ${name}`);
+    hello (@PathParam("name") name: string) {
+        return `Hello: ${name}`;
     }
 
     @Get('/age')
-    age (@ResParam() res, @QueryParam("age") age: string) {
-        res.send(age)
+    age (@QueryParam("age") age: string) {
+        return age;
     }
 
     @Post()
-    post(@BodyParam body: any, @ResParam res: express.Response) {
-        res.json(body);
+    post (@BodyParam body: any) {
+        return body;
     }
 }
 

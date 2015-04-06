@@ -113,4 +113,59 @@ describe ('Core', () => {
             assert(getParameterWithConfigSpy.calledWith(paramConfig2, adapterRequestData));
         });
     });
+
+    describe ('callRequestHandler', () => {
+
+        it ('should call the request handler of the adapter for a synchronous result', () => {
+            const sendSpy = sinon.spy();
+            const adapter = {
+                send: sendSpy
+            };
+            function FooClass() {}
+            const totoSpy = sinon.stub().returns('sync result');
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                }
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            assert(totoSpy.calledOn(controller));
+            assert(totoSpy.calledOnce);
+            assert(sendSpy.calledOnce);
+            assert(sendSpy.calledWith('sync result', adapterRequestData));
+        });
+
+        it ('should call the request handler of the adapter for an asynchronous result', (done) => {
+            const sendSpy = sinon.spy();
+            const adapter = {
+                send: sendSpy
+            };
+            function FooClass() {}
+            const asyncPromiseResult = new Promise((resolve: (a: any) => void, reject) => {
+                resolve('async result');
+            });
+            const totoSpy = sinon.stub().returns(asyncPromiseResult);
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                }
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            asyncPromiseResult.then(() => {
+                assert(totoSpy.calledOn(controller));
+                assert(totoSpy.calledOnce);
+                assert(sendSpy.calledOnce);
+                assert(sendSpy.calledWith('async result', adapterRequestData));
+                done();
+            });
+        });
+    });
 });

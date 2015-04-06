@@ -1,6 +1,6 @@
 import * as express from 'express';
 import {IAdapter, IControllerConfiguration, ParameterType, IParameterConfiguration, IPathParameter, IQueryParameter} from '../interfaces';
-import {createParameterList} from '../core';
+import {createParameterList, callRequestHandler} from '../core';
 
 export interface ExpressAdapterData {
     req: express.Request;
@@ -23,7 +23,7 @@ export default class ExpressAdapter implements IAdapter {
     addRoute(configuration: IControllerConfiguration, method: string, path: string, controller: any, handlerName: string, handler: Function) {
         console.log(`Add route: ${method} ${path}`);
         this.app[method](path, (req, res, next) => {
-            handler.apply(controller, this.createParameterList(configuration, handlerName, req, res));
+            return callRequestHandler(this, handler, controller, configuration, handlerName, {req, res});
         });
     }
 
@@ -45,5 +45,9 @@ export default class ExpressAdapter implements IAdapter {
                 return adapterRequestData.req.query[(<IQueryParameter>paramConfig).name];
                 break;
         }
+    }
+
+    send (data: any, expressAdapterData: ExpressAdapterData) {
+        expressAdapterData.res.send(data);
     }
 }
