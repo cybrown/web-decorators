@@ -27,13 +27,14 @@ API
 
 @Get(path), @Post(path), @Put(path), @Delete(path): Define a method as an handler for an HTTP verb.
 If @Route is used on the controller, both are concatenated.
+The result can be directly returned with a return statement, or a promise can be used for an asynchronous result.
 
 @Middle(path?): Set a middleware on path.
 If @Route is used on the controller, both are concatenated.
 
 @PathParam(name), @QueryParam(name), @BodyParam(): Define a handler parameter to receive data from the request path parameters, query string or body.
 
-@ReqParam(), @ResParam(): Define a handler parameter as a raw request or response.
+@AdapterParam(): Define a handler parameter as an object defined by the backend implementation, with express, this object contains res as the http response and req as the http request.
 
 Adapters
 --------
