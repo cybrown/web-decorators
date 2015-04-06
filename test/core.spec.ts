@@ -293,7 +293,7 @@ describe ('Core', () => {
 
     describe ('DecoratedAppBootstraper', () => {
 
-        it.only ('should bootstrap an application', () => {
+        it ('should bootstrap an application', () => {
             const addRouteSpy = sinon.spy();
             const addMiddlewareSpy = sinon.spy();
             const adapter = {
