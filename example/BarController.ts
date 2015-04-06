@@ -3,7 +3,7 @@ import {ExpressAdapterData} from '../src/adapters/ExpressAdapter';
 import {Controller, Get, Post, Middle, PathParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
 
 @Controller('/bar')
-export default class Foo {
+export default class BarController {
 
     numberOfRequests = 0;
 
