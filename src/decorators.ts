@@ -36,19 +36,11 @@ export function PathParam(name: string): ParameterDecorator {
     };
 }
 
-export function ResParam(): ParameterDecorator {
+export function AdapterParam(): ParameterDecorator {
 
     return function (_target: Function, methodName: string, index: number) {
         const target = <IObjectWithControllerConfiguration><any>_target;
-        addMethodConfiguration(target, methodName, {index, type: ParameterType.RES_PARAMETER});
-    }
-}
-
-export function ReqParam(): ParameterDecorator {
-
-    return function (_target: Function, methodName: string, index: number) {
-        const target = <IObjectWithControllerConfiguration><any>_target;
-        addMethodConfiguration(target, methodName, {index, type: ParameterType.REQ_PARAMETER});
+        addMethodConfiguration(target, methodName, {index, type: ParameterType.ADAPTER_PARAMETER});
     }
 }
 

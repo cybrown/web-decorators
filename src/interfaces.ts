@@ -1,7 +1,6 @@
 export enum ParameterType {
     PATH_PARAMETER,
-    REQ_PARAMETER,
-    RES_PARAMETER,
+    ADAPTER_PARAMETER,
     BODY_PARAMETER,
     QUERY_PARAMETER
 }

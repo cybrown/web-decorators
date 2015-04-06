@@ -99,7 +99,7 @@ describe ('Core', () => {
             };
             const paramConfig2 = {
                 index: 1,
-                type: ParameterType.REQ_PARAMETER
+                type: ParameterType.ADAPTER_PARAMETER
             };
             const config = <any>{
                 methodsParameters: {

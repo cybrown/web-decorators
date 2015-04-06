@@ -5,25 +5,14 @@ import {ParameterType} from '../src/interfaces';
 
 describe ('Decorators', () => {
 
-    describe ('@ReqParam', () => {
+    describe ('@AdapterParam', () => {
 
-        it ('should add parameter request information to configuration', () => {
+        it ('should add parameter request information from adapter to configuration', () => {
             function target() {};
-            decorators.ReqParam()(target, 'method', 3);
+            decorators.AdapterParam()(target, 'method', 3);
             assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
             assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.REQ_PARAMETER);
-        });
-    });
-
-    describe ('@ResParam', () => {
-
-        it ('should add parameter response information to configuration', () => {
-            function target() {};
-            decorators.ResParam()(target, 'method', 3);
-            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.RES_PARAMETER);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.ADAPTER_PARAMETER);
         });
     });
 

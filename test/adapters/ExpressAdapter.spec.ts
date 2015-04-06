@@ -85,30 +85,16 @@ describe ('ExpressAdapter', () => {
             assert.equal(result, 'value');
         });
 
-        it ('should get a RES_PARAMETER', () => {
+        it ('should get an ADAPTER_PARAMETER', () => {
             const paramConfig = {
                 index: 1,
-                type: ParameterType.RES_PARAMETER
+                type: ParameterType.ADAPTER_PARAMETER
             };
-            const responseObject = {key: 'response'};
             const adapterRequestData = {
-                res: responseObject
+                res: 'response'
             };
             var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
-            assert.equal(result, responseObject);
-        });
-
-        it ('should get a REQ_PARAMETER', () => {
-            const paramConfig = {
-                index: 1,
-                type: ParameterType.REQ_PARAMETER
-            };
-            const requestObject = {key: 'request'};
-            const adapterRequestData = {
-                req: requestObject
-            };
-            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
-            assert.equal(result, requestObject);
+            assert.equal(result, adapterRequestData);
         });
 
         it ('should get a BODY_PARAMETER', () => {

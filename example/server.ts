@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import {Controller, Get, Post, Middle, Route, PathParam, ResParam, ReqParam, BodyParam, QueryParam} from '../src/decorators';
-import ExpressAdapter from '../src/adapters/ExpressAdapter';
+import {Controller, Get, Post, Middle, Route, PathParam, AdapterParam, BodyParam, QueryParam} from '../src/decorators';
+import {default as ExpressAdapter, ExpressAdapterData} from '../src/adapters/ExpressAdapter';
 import * as Promise from 'bluebird';
 
 var app = express();
@@ -23,6 +23,11 @@ class Foo {
     @Get()
     index() {
         return 'ok decorator';
+    }
+
+    @Get('/raw')
+    raw (@AdapterParam() adapter: ExpressAdapterData) {
+        adapter.res.send('ok with raw response');
     }
 
     @Get('/async')

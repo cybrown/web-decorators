@@ -32,11 +32,8 @@ export default class ExpressAdapter implements IAdapter {
             case ParameterType.PATH_PARAMETER:
                 return adapterRequestData.req.params[(<IPathParameter>paramConfig).name];
                 break;
-            case ParameterType.RES_PARAMETER:
-                return adapterRequestData.res;
-                break;
-            case ParameterType.REQ_PARAMETER:
-                return adapterRequestData.req;
+            case ParameterType.ADAPTER_PARAMETER:
+                return adapterRequestData;
                 break;
             case ParameterType.BODY_PARAMETER:
                 return adapterRequestData.req.body;
