@@ -56,7 +56,7 @@ export function createParameterList(adapter: IAdapter, config: IControllerConfig
 }
 
 export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
-    const result = handler.apply(controller, createParameterList(this, configuration, handlerName, adapterRequestData));
+    const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData));
     if (result != null) {
         if (typeof result.then === 'function') {
             result.then(value => adapter.send(value, adapterRequestData));
