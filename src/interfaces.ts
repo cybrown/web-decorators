@@ -46,7 +46,7 @@ export interface IControllerConfiguration {
     middlewares: IMiddleware[];
     root: string;
     timeout: number;
-    methodsParameters: {[methodName: string]: {[parameterIndex: number]: IParameterConfiguration}};
+    methodsParameters: {[methodName: string]: IParameterConfiguration[]};
 }
 
 export interface IObjectWithControllerConfiguration {

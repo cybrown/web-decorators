@@ -1,10 +1,12 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration} from './interfaces';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration} from './interfaces';
 import {createPathWithRoot, applyConfiguration} from './internal';
 
-export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string) {
+export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
+    addConfiguration(target);
     if (!target.$$controllerConfiguration.methodsParameters[methodName]) {
-        target.$$controllerConfiguration.methodsParameters[methodName] = {};
+        target.$$controllerConfiguration.methodsParameters[methodName] = [];
     }
+    target.$$controllerConfiguration.methodsParameters[methodName].push(parameterConfiguration);
 }
 
 export function tryApplyConfiguration(cls: IControllerClass, configuration: IControllerConfiguration) {

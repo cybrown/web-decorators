@@ -10,9 +10,9 @@ describe ('Decorators', () => {
         it ('should add parameter request information to configuration', () => {
             function target() {};
             decorators.ReqParam()(target, 'method', 3);
-            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][3]);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].type, ParameterType.REQ_PARAMETER);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.REQ_PARAMETER);
         });
     });
 
@@ -21,9 +21,9 @@ describe ('Decorators', () => {
         it ('should add parameter response information to configuration', () => {
             function target() {};
             decorators.ResParam()(target, 'method', 3);
-            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][3]);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].type, ParameterType.RES_PARAMETER);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.RES_PARAMETER);
         });
     });
 
@@ -32,9 +32,9 @@ describe ('Decorators', () => {
         it ('should add parameter body information to configuration', () => {
             function target() {};
             decorators.BodyParam()(target, 'method', 3);
-            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][3]);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].type, ParameterType.BODY_PARAMETER);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.BODY_PARAMETER);
         });
     });
 
@@ -43,10 +43,10 @@ describe ('Decorators', () => {
         it ('should add parameter query information to configuration', () => {
             function target() {};
             decorators.QueryParam('name')(target, 'method', 3);
-            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][3]);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].name, 'name');
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].type, ParameterType.QUERY_PARAMETER);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].name, 'name');
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.QUERY_PARAMETER);
         });
     });
 
@@ -55,10 +55,10 @@ describe ('Decorators', () => {
         it ('should add parameter path information to configuration', () => {
             function target() {};
             decorators.PathParam('name')(target, 'method', 3);
-            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][3]);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].index, 3);
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].name, 'name');
-            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][3].type, ParameterType.PATH_PARAMETER);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].name, 'name');
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.PATH_PARAMETER);
         });
     });
 

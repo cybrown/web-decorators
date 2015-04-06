@@ -12,12 +12,12 @@ describe ('Core', () => {
                     methodsParameters: {}
                 }
             };
-            core.addMethodConfiguration(<any>target, 'toto');
+            core.addMethodConfiguration(<any>target, 'toto', {index: 0, type: 0});
             assert(target.$$controllerConfiguration.methodsParameters['toto']);
         });
 
         it ('should not override previous configuration object', () => {
-            const reference = {};
+            const reference = [];
             const target = {
                 $$controllerConfiguration: {
                     methodsParameters: {
@@ -25,7 +25,7 @@ describe ('Core', () => {
                     }
                 }
             };
-            core.addMethodConfiguration(<any>target, 'toto');
+            core.addMethodConfiguration(<any>target, 'toto', {index: 0, type: 0});
             assert.equal(target.$$controllerConfiguration.methodsParameters.toto, reference);
         });
     });

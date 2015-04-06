@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {IAdapter, IControllerConfiguration, ParameterType, IPathParameter, IQueryParameter} from '../interfaces';
+import {IAdapter, IControllerConfiguration, ParameterType, IParameterConfiguration, IPathParameter, IQueryParameter} from '../interfaces';
 
 export default class ExpressAdapter implements IAdapter {
 
@@ -21,29 +21,31 @@ export default class ExpressAdapter implements IAdapter {
         });
     }
 
-    private createParameterList(config: IControllerConfiguration, methodName: string, req: express.Request, res: express.Request) {
+    getParameterWithConfig (paramConfig: IParameterConfiguration, req: express.Request, res: express.Response) {
+        switch (paramConfig.type) {
+            case ParameterType.PATH_PARAMETER:
+                return req.params[(<IPathParameter>paramConfig).name];
+                break;
+            case ParameterType.RES_PARAMETER:
+                return res;
+                break;
+            case ParameterType.REQ_PARAMETER:
+                return req;
+                break;
+            case ParameterType.BODY_PARAMETER:
+                return req.body;
+                break;
+            case ParameterType.QUERY_PARAMETER:
+                return req.query[(<IQueryParameter>paramConfig).name];
+                break;
+        }
+    }
+
+    private createParameterList(config: IControllerConfiguration, methodName: string, req: express.Request, res: express.Response) {
         const parameters = [];
         if (config.methodsParameters[methodName]) {
-            Object.keys(config.methodsParameters[methodName]).forEach(_index => {
-                const index: number = parseInt(_index, 10);
-                const paramConfig = config.methodsParameters[methodName][index];
-                switch (paramConfig.type) {
-                    case ParameterType.PATH_PARAMETER:
-                        parameters[index] = req.params[(<IPathParameter>paramConfig).name];
-                        break;
-                    case ParameterType.RES_PARAMETER:
-                        parameters[index] = res;
-                        break;
-                    case ParameterType.REQ_PARAMETER:
-                        parameters[index] = req;
-                        break;
-                    case ParameterType.BODY_PARAMETER:
-                        parameters[index] = req.body;
-                        break;
-                    case ParameterType.QUERY_PARAMETER:
-                        parameters[index] = req.query[(<IQueryParameter>paramConfig).name];
-                        break;
-                }
+            config.methodsParameters[methodName].forEach(paramConfig => {
+                parameters[paramConfig.index] = this.getParameterWithConfig(paramConfig, req, res);
             });
         }
         return parameters;
