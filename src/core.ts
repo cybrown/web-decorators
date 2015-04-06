@@ -1,5 +1,6 @@
 import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter} from './interfaces';
 import {createPathWithRoot, applyConfiguration} from './internal';
+import * as Promise from 'bluebird';
 
 export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
     addConfiguration(target);
@@ -58,14 +59,14 @@ export function createParameterList(adapter: IAdapter, config: IControllerConfig
 export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
     const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData));
     if (result != null) {
-        if (typeof result === 'function') {
-            result((err, result) => {
+        Promise.join(result, (result) => {
+            if (typeof result === 'function') {
+                result((err, result) => {
+                    adapter.send(result, adapterRequestData);
+                });
+            } else {
                 adapter.send(result, adapterRequestData);
-            });
-        } else if (typeof result.then === 'function') {
-            result.then(value => adapter.send(value, adapterRequestData));
-        } else {
-            adapter.send(result, adapterRequestData);
-        }
+            }
+        });
     }
 }

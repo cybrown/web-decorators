@@ -159,13 +159,15 @@ describe ('Core', () => {
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
             core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
-            asyncPromiseResult.then(() => {
-                assert(totoSpy.calledOn(controller));
-                assert(totoSpy.calledOnce);
-                assert(sendSpy.calledOnce);
-                assert(sendSpy.calledWith('async result', adapterRequestData));
-                done();
-            });
+            setTimeout(() => {
+                asyncPromiseResult.then(() => {
+                    assert(totoSpy.calledOn(controller));
+                    assert(totoSpy.calledOnce);
+                    assert(sendSpy.calledOnce);
+                    assert(sendSpy.calledWith('async result', adapterRequestData));
+                    done();
+                });
+            }, 20);
         });
 
         it ('should call the request handler of the adapter for an asynchronous result with a thunk', (done) => {
