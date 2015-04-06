@@ -5,6 +5,10 @@ export enum ParameterType {
     QUERY_PARAMETER
 }
 
+export enum SendType {
+    JSON
+}
+
 export interface IControllerClass extends Function {
     prototype: IObjectWithControllerConfiguration;
     new (): Function;
@@ -48,6 +52,7 @@ export interface IControllerConfiguration {
     root: string;
     timeout: number;
     methodsParameters: {[methodName: string]: IParameterConfiguration[]};
+    sendTypes: {[methodName: string]: SendType};
 }
 
 export interface IObjectWithControllerConfiguration {

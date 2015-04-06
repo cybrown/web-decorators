@@ -1,4 +1,4 @@
-import {IAdapter, IControllerClass, IObjectWithControllerConfiguration, IPathParameter, IQueryParameter, ParameterType} from './interfaces';
+import {IAdapter, IControllerClass, IObjectWithControllerConfiguration, IPathParameter, IQueryParameter, ParameterType, SendType} from './interfaces';
 import {addConfiguration, tryApplyConfiguration, addMethodConfiguration, methodDecoratorFactory} from './core';
 
 export function Controller(adapter: IAdapter): ClassDecorator {
@@ -59,6 +59,14 @@ export function QueryParam(name: string): ParameterDecorator {
         const parameterInfo: IQueryParameter = {index, name, type: ParameterType.QUERY_PARAMETER};
         addMethodConfiguration(target, methodName, parameterInfo);
     };
+}
+
+export function SendJson(): MethodDecorator {
+
+    return function (target: IObjectWithControllerConfiguration, methodName: string, descriptor: TypedPropertyDescriptor<any>) {
+        addConfiguration(target);
+        target.$$controllerConfiguration.sendTypes[methodName] = SendType.JSON;
+    }
 }
 
 export const Get = methodDecoratorFactory('get');

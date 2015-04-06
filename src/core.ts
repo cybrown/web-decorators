@@ -30,7 +30,8 @@ export function addConfiguration(target: IObjectWithControllerConfiguration) {
             adapter: null,
             root: null,
             timeout: null,
-            methodsParameters: {}
+            methodsParameters: {},
+            sendTypes: {}
         }
     }
 }
