@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import {Controller, Get, Post, Middle, Route, PathParam, AdapterParam, BodyParam, QueryParam} from '../src/decorators';
+import {Controller, Get, Post, Middle, Route, PathParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
 import {default as ExpressAdapter, ExpressAdapterData} from '../src/adapters/ExpressAdapter';
 import * as Promise from 'bluebird';
 
@@ -47,6 +47,12 @@ class Foo {
     @Get('/age')
     age (@QueryParam("age") age: string) {
         return age;
+    }
+
+    @Get('/jsonstr')
+    @SendJson()
+    json () {
+        return "json string !"
     }
 
     @Post()
