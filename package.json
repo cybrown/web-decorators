@@ -22,7 +22,7 @@
     "typescript": "^1.5.0-alpha"
   },
   "scripts": {
-    "test": "mocha lib/test --recursive",
+    "test": "npm run build && mocha lib/test --recursive",
     "build": "tsc",
     "postinstall": "tsd reinstall"
   },
