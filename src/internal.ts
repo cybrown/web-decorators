@@ -1,4 +1,4 @@
-import {IControllerClass, IControllerConfiguration} from './interfaces';
+import {IControllerClass, IControllerConfiguration, IAdapter} from './interfaces';
 
 export function createPathWithRoot(root: string, path: string): string {
     if (root && path) {
@@ -14,14 +14,4 @@ export function createPathWithRoot(root: string, path: string): string {
     } else {
         return path;
     }
-}
-
-export function applyConfiguration(cls: IControllerClass, configuration: IControllerConfiguration) {
-    var instance = new cls();
-    configuration.middlewares.forEach(middleware => {
-        configuration.adapter.addMiddleware(createPathWithRoot(configuration.root, middleware.path), instance, instance[middleware.handlerName]);
-    });
-    configuration.routes.forEach(route => {
-        configuration.adapter.addRoute(configuration, route.method, createPathWithRoot(configuration.root, route.path), instance, route.handlerName, instance[route.handlerName]);
-    });
 }

@@ -60,7 +60,7 @@ describe ('Decorators', () => {
         });
     });
 
-    describe ('@Route', () => {
+    describe ('@Controller', () => {
 
         it ('should add route information and try to apply it', () => {
             function target() {}
@@ -69,20 +69,8 @@ describe ('Decorators', () => {
                     adapter: {}
                 }
             };
-            decorators.Route('/path')(target);
+            decorators.Controller('/path')(target);
             assert.equal(target.prototype.$$controllerConfiguration.root, '/path');
-            assert(target.prototype.$$controllerConfiguration.timeout);
-        });
-    });
-
-    describe ('@Controller', () => {
-
-        it ('should add controller information and try to apply it', () => {
-            const adapter = <any>{};
-            function target() {}
-            decorators.Controller(adapter)(target);
-            assert.equal(target.prototype.$$controllerConfiguration.adapter, adapter);
-            assert(target.prototype.$$controllerConfiguration.timeout);
         });
     });
 

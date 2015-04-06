@@ -1,5 +1,5 @@
 import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType} from './interfaces';
-import {createPathWithRoot, applyConfiguration} from './internal';
+import {createPathWithRoot} from './internal';
 import * as Promise from 'bluebird';
 
 export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
@@ -10,15 +10,14 @@ export function addMethodConfiguration(target: IObjectWithControllerConfiguratio
     target.$$controllerConfiguration.methodsParameters[methodName].push(parameterConfiguration);
 }
 
-export function tryApplyConfiguration(cls: IControllerClass, configuration: IControllerConfiguration) {
-    if (!configuration.adapter) {
-        return;
-    }
-    if (configuration.timeout) {
-        clearTimeout(configuration.timeout);
-    }
-    configuration.timeout = setTimeout(() => {
-        applyConfiguration(cls, configuration);
+export function applyConfiguration(adapter: IAdapter, cls: IControllerClass) {
+    const configuration = cls.prototype.$$controllerConfiguration;
+    var instance = new cls();
+    configuration.middlewares.forEach(middleware => {
+        adapter.addMiddleware(createPathWithRoot(configuration.root, middleware.path), instance, instance[middleware.handlerName]);
+    });
+    configuration.routes.forEach(route => {
+        adapter.addRoute(configuration, route.method, createPathWithRoot(configuration.root, route.path), instance, route.handlerName, instance[route.handlerName]);
     });
 }
 
@@ -29,7 +28,6 @@ export function addConfiguration(target: IObjectWithControllerConfiguration) {
             middlewares: [],
             adapter: null,
             root: null,
-            timeout: null,
             methodsParameters: {},
             sendTypes: {}
         }
@@ -69,6 +67,25 @@ export function callRequestHandler (adapter: IAdapter, handler: Function, contro
                 callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
             }
         });
+    }
+}
+
+export class DecoratedAppBootstraper {
+
+    controllers: IControllerClass[] = [];
+
+    constructor (protected adapter: IAdapter) {
+
+    }
+
+    controller (controllerClass: any): DecoratedAppBootstraper {
+        this.controllers.push(controllerClass);
+        return this;
+    }
+
+    start (): DecoratedAppBootstraper {
+        this.controllers.forEach(controllerClass => applyConfiguration(this.adapter, controllerClass));
+        return this;
     }
 }
 

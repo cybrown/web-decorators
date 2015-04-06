@@ -14,6 +14,7 @@
         "!./node_modules/**/*.ts"
     ],
     "files": [
+        "./example/BarController.ts",
         "./example/server.ts",
         "./src/adapters/ExpressAdapter.ts",
         "./src/core.ts",

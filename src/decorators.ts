@@ -1,21 +1,11 @@
 import {IAdapter, IControllerClass, IObjectWithControllerConfiguration, IPathParameter, IQueryParameter, ParameterType, SendType} from './interfaces';
-import {addConfiguration, tryApplyConfiguration, addMethodConfiguration, methodDecoratorFactory} from './core';
+import {addConfiguration, applyConfiguration, addMethodConfiguration, methodDecoratorFactory} from './core';
 
-export function Controller(adapter: IAdapter): ClassDecorator {
-
-    return function (target: IControllerClass) {
-        addConfiguration(target.prototype);
-        target.prototype.$$controllerConfiguration.adapter = adapter;
-        tryApplyConfiguration(target, target.prototype.$$controllerConfiguration);
-    };
-}
-
-export function Route(root: string): ClassDecorator {
+export function Controller(root: string): ClassDecorator {
 
     return function (target: IControllerClass) {
         addConfiguration(target.prototype);
         target.prototype.$$controllerConfiguration.root = root;
-        tryApplyConfiguration(target, target.prototype.$$controllerConfiguration);
     }
 }
 

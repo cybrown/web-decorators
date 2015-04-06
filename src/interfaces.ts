@@ -47,11 +47,9 @@ export interface IAdapter {
 }
 
 export interface IControllerConfiguration {
-    adapter: IAdapter;
     routes: IRoute[];
     middlewares: IMiddleware[];
     root: string;
-    timeout: number;
     methodsParameters: {[methodName: string]: IParameterConfiguration[]};
     sendTypes: {[methodName: string]: SendType};
 }

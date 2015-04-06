@@ -31,22 +31,82 @@ describe ('Core', () => {
         });
     });
 
-    describe ('tryApplyConfiguration', () => {
+    describe ('applyConfiguration', () => {
 
-        it ('should not add timeout if adapter is not present', () => {
-            function FooCtrl() {};
-            const configuration = <any>{};
-            core.tryApplyConfiguration(<any>FooCtrl, <any>configuration);
-            assert(!configuration.timeout);
+        it ('should call constructor only once', () => {
+            var FooClass = sinon.spy();
+            let configuration = {
+                routes: [],
+                middlewares: [],
+                root: undefined,
+                timeout: null,
+                methodsParameters: {}
+            };
+            FooClass.prototype.$$controllerConfiguration = configuration;
+            core.applyConfiguration(<any>{addRoute: function(){}}, <any>FooClass);
+            assert(FooClass.calledOnce);
         });
 
-        it ('should add timeout if adapter is present', () => {
-            function FooCtrl() {};
-            const configuration = <any>{
-                adapter: {}
+        it ('should call addRoute for each configured route', () => {
+            var FooClass = sinon.spy();
+            FooClass.prototype.toto = function () {};
+            FooClass.prototype.totoGet = function () {};
+            var addRouteSpy = sinon.spy();
+            let adapter = {
+                addRoute: addRouteSpy
             };
-            core.tryApplyConfiguration(<any>FooCtrl, <any>configuration);
-            assert(configuration.timeout);
+            let routes = [{
+                method: 'post',
+                path: '/titi',
+                handlerName: 'toto'
+            }, {
+                method: 'get',
+                path: '/titi2',
+                handlerName: 'totoGet'
+            }];
+            let configuration = {
+                adapter: adapter,
+                routes: routes,
+                middlewares: [],
+                root: '/app/root',
+                timeout: null,
+                methodsParameters: {}
+            };
+            FooClass.prototype.$$controllerConfiguration = configuration;
+            core.applyConfiguration(<any>adapter, <any>FooClass);
+            assert(addRouteSpy.calledTwice);
+            assert(addRouteSpy.calledWith(configuration, 'post', '/app/root/titi', sinon.match.instanceOf(FooClass), 'toto', FooClass.prototype.toto));
+            assert(addRouteSpy.calledWith(configuration, 'get', '/app/root/titi2', sinon.match.instanceOf(FooClass), 'totoGet', FooClass.prototype.totoGet));
+        });
+
+        it ('should call addMiddleware for each configured middleware', () => {
+            var FooClass = sinon.spy();
+            FooClass.prototype.toto = function () {};
+            FooClass.prototype.totoGet = function () {};
+            var addMiddlewareSpy = sinon.spy();
+            let adapter = {
+                addMiddleware: addMiddlewareSpy
+            };
+            let middlewares = [{
+                path: '/titi',
+                handlerName: 'toto'
+            }, {
+                path: '/titi2',
+                handlerName: 'totoGet'
+            }];
+            let configuration = {
+                adapter: adapter,
+                routes: [],
+                middlewares: middlewares,
+                root: '/app/root',
+                timeout: null,
+                methodsParameters: {}
+            };
+            FooClass.prototype.$$controllerConfiguration = configuration;
+            core.applyConfiguration(<any>adapter, <any>FooClass);
+            assert(addMiddlewareSpy.calledTwice);
+            assert(addMiddlewareSpy.calledWith('/app/root/titi', sinon.match.instanceOf(FooClass), FooClass.prototype.toto));
+            assert(addMiddlewareSpy.calledWith('/app/root/titi2', sinon.match.instanceOf(FooClass), FooClass.prototype.totoGet));
         });
     });
 
@@ -228,6 +288,28 @@ describe ('Core', () => {
             assert(totoSpy.calledOnce);
             assert(sendJsonSpy.calledOnce);
             assert(sendJsonSpy.calledWith('sync result', adapterRequestData));
+        });
+    });
+
+    describe ('DecoratedAppBootstraper', () => {
+
+        it.only ('should bootstrap an application', () => {
+            const addRouteSpy = sinon.spy();
+            const addMiddlewareSpy = sinon.spy();
+            const adapter = {
+                addRoute: addRouteSpy,
+                addMiddleware: addMiddlewareSpy
+            };
+            function FooController () {};
+            FooController.prototype.$$controllerConfiguration = {
+                routes: [{}],
+                middlewares: [{}]
+            };
+            const bootstrapper = new core.DecoratedAppBootstraper(<any>adapter)
+                .controller(FooController)
+                .start();
+            assert(addRouteSpy.calledOnce);
+            assert(addMiddlewareSpy.calledOnce);
         });
     });
 });
