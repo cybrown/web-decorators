@@ -201,7 +201,7 @@ describe ('Core', () => {
             }, 20);
         });
 
-        it.only ('should call the json send method if the method is decorated with @SendJson', () => {
+        it ('should call the json send method if the method is decorated with @SendJson', () => {
             const sendJsonSpy = sinon.spy();
             const adapter = {
                 sendJson: sendJsonSpy
