@@ -13,13 +13,25 @@ Installation
  - Run `npm install` to install the dependencies and typing definition.
  - Run `npm run build` to build the typescript source files to the /lib directory.
 
+Features
+--------
+
+ - Define classes as controllers
+ - Define root path for an entier controller
+ - Define routes on get, post, put, delete and patch
+ - Define middlewares on routes
+ - Inject data from the query string, path parameter or entire body
+ - Force send Json data
+ - Inject the backend object to use directly the underlying framework if needed
+ - Abstract the underlying framework in front of an adapter (express is provided)
+
 Example
 -------
 
 The typescript example is in the /example directory, build the project with `npm run build` and run `node lib/example/server.js`
 
-API
----
+Decorator API
+-------------
 
 @Controller(adapter): Defines a class as a controller, the parameter is an adapter to a backend (express adapter is included).
 
@@ -40,3 +52,10 @@ Adapters
 --------
 
 The API can use any class implementing the IAdapter interface, the express adapter is provided.
+
+An adapter must provide the following methods:
+ - addMiddleware: add a middleware, optionally on a specific path
+ - addRoute: register an handler on a specific method and path
+ - send: send raw data to the client
+ - sendJson: send data as json to the client
+ - getParameterWithConfig: extract a parameter (from query string, path param...) with the provided configuration
