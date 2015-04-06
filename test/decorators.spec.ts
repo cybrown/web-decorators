@@ -1,9 +1,18 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as decorators from '../src/decorators';
-import {ParameterType} from '../src/interfaces';
+import {ParameterType, SendType} from '../src/interfaces';
 
 describe ('Decorators', () => {
+
+    describe ('@SendJson', () => {
+
+        it ('should add the json return type on the method configuration', () => {
+            function target() {};
+            decorators.SendJson()(target, 'method', {});
+            assert.equal((<any>target).$$controllerConfiguration.sendTypes['method'], SendType.JSON);
+        });
+    });
 
     describe ('@AdapterParam', () => {
 

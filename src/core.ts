@@ -1,4 +1,4 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter} from './interfaces';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType} from './interfaces';
 import {createPathWithRoot, applyConfiguration} from './internal';
 import * as Promise from 'bluebird';
 
@@ -30,7 +30,8 @@ export function addConfiguration(target: IObjectWithControllerConfiguration) {
             adapter: null,
             root: null,
             timeout: null,
-            methodsParameters: {}
+            methodsParameters: {},
+            sendTypes: {}
         }
     }
 }
@@ -62,11 +63,21 @@ export function callRequestHandler (adapter: IAdapter, handler: Function, contro
         Promise.join(result, (result) => {
             if (typeof result === 'function') {
                 result((err, result) => {
-                    adapter.send(result, adapterRequestData);
+                    callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
                 });
             } else {
-                adapter.send(result, adapterRequestData);
+                callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
             }
         });
+    }
+}
+
+function callSendMethod(adapter: IAdapter, handler: Function, result: any, sendType: SendType, adapterRequestData: any) {
+    switch (sendType) {
+        case SendType.JSON:
+            adapter.sendJson(result, adapterRequestData);
+            break;
+        default:
+            adapter.send(result, adapterRequestData);
     }
 }

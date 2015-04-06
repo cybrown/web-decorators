@@ -47,4 +47,8 @@ export default class ExpressAdapter implements IAdapter {
     send (data: any, expressAdapterData: ExpressAdapterData) {
         expressAdapterData.res.send(data);
     }
+
+    sendJson (data: any, expressAdapterData: ExpressAdapterData) {
+        expressAdapterData.res.json(data);
+    }
 }
