@@ -20,8 +20,8 @@ export default class BarController {
     }
 
     @Get('/raw')
-    raw (@AdapterParam() adapter: ExpressAdapterData) {
-        adapter.res.send('ok with raw response');
+    raw (@AdapterParam() {req, res}: ExpressAdapterData) {
+        res.send('ok with raw response');
     }
 
     @Get('/async')
