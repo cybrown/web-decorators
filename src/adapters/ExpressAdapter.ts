@@ -41,6 +41,12 @@ export default class ExpressAdapter implements IAdapter {
             case ParameterType.QUERY_PARAMETER:
                 return adapterRequestData.req.query[(<IQueryParameter>paramConfig).name];
                 break;
+            case ParameterType.HEADER_PARAMETER:
+                return adapterRequestData.req.headers[(<IQueryParameter>paramConfig).name.toLowerCase()];
+                break;
+            case ParameterType.COOKIE_PARAMETER:
+                return adapterRequestData.req.cookies[(<IQueryParameter>paramConfig).name];
+                break;
         }
     }
 

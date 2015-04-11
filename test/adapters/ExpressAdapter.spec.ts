@@ -128,5 +128,39 @@ describe ('ExpressAdapter', () => {
             var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
             assert.equal(result, 'value');
         });
+
+        it ('should get a HEADER_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType.HEADER_PARAMETER,
+                name: 'Toto'
+            };
+            const adapterRequestData = {
+                req: {
+                    headers: {
+                        toto: 'value'
+                    }
+                }
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, 'value');
+        });
+
+        it ('should get a COOKIE_PARAMETER', () => {
+            const paramConfig = {
+                index: 1,
+                type: ParameterType.COOKIE_PARAMETER,
+                name: 'toto'
+            };
+            const adapterRequestData = {
+                req: {
+                    cookies: {
+                        toto: 'value'
+                    }
+                }
+            };
+            var result = adapter.getParameterWithConfig(paramConfig, <any>adapterRequestData);
+            assert.equal(result, 'value');
+        });
     });
 });

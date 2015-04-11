@@ -1,6 +1,6 @@
 import * as express from 'express';
 import {ExpressAdapterData} from '../src/adapters/ExpressAdapter';
-import {Controller, Get, Post, Middle, PathParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
+import {Controller, Get, Post, Middle, PathParam, HeaderParam, CookieParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
 
 @Controller('/bar')
 export default class BarController {
@@ -15,13 +15,19 @@ export default class BarController {
     }
 
     @Get()
-    index() {
+    index(@HeaderParam('Host') host: string) {
+        console.log(host);
         return 'ok decorator';
     }
 
     @Get('/raw')
-    raw (@AdapterParam() adapter: ExpressAdapterData) {
-        adapter.res.send('ok with raw response');
+    raw (@AdapterParam() {req, res}: ExpressAdapterData) {
+        res.send('ok with raw response');
+    }
+
+    @Get('/cookie')
+    cookie (@CookieParam('sessionId') sessionId: string) {
+        return sessionId;
     }
 
     @Get('/async')

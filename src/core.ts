@@ -1,6 +1,6 @@
 import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType} from './interfaces';
 import {createPathWithRoot} from './internal';
-import * as Promise from 'bluebird';
+import {unwrapAsyncValue} from './util';
 
 export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
     addConfiguration(target);
@@ -58,14 +58,8 @@ export function createParameterList(adapter: IAdapter, config: IControllerConfig
 export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
     const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData));
     if (result != null) {
-        Promise.join(result, (result) => {
-            if (typeof result === 'function') {
-                result((err, result) => {
-                    callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
-                });
-            } else {
-                callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
-            }
+        unwrapAsyncValue(result, (err, result) => {
+            callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
         });
     }
 }

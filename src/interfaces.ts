@@ -2,7 +2,9 @@ export enum ParameterType {
     PATH_PARAMETER,
     ADAPTER_PARAMETER,
     BODY_PARAMETER,
-    QUERY_PARAMETER
+    QUERY_PARAMETER,
+    HEADER_PARAMETER,
+    COOKIE_PARAMETER
 }
 
 export enum SendType {
