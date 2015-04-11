@@ -60,6 +60,18 @@ describe ('Decorators', () => {
         });
     });
 
+    describe ('@HeaderParam', () => {
+
+        it ('should add header information to configuration', () => {
+            function target() {};
+            decorators.HeaderParam('Content-type')(target, 'method', 3);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].name, 'Content-type');
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.HEADER_PARAMETER);
+        })
+    });
+
     describe ('@Controller', () => {
 
         it ('should add route information and try to apply it', () => {
