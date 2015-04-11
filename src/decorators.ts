@@ -60,6 +60,15 @@ export function HeaderParam(name: string): ParameterDecorator {
     };
 }
 
+export function CookieParam(name: string): ParameterDecorator {
+
+    return function (_target: Function, methodName: string, index: number) {
+        const target = <IObjectWithControllerConfiguration><any>_target;
+        const parameterInfo: IQueryParameter = {index, name, type: ParameterType.COOKIE_PARAMETER};
+        addMethodConfiguration(target, methodName, parameterInfo);
+    };
+}
+
 export function SendJson(): MethodDecorator {
 
     return function (target: IObjectWithControllerConfiguration, methodName: string, descriptor: TypedPropertyDescriptor<any>) {

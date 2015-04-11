@@ -72,6 +72,18 @@ describe ('Decorators', () => {
         })
     });
 
+    describe ('@CookieParam', () => {
+
+        it ('should add header information to configuration', () => {
+            function target() {};
+            decorators.CookieParam('sessiondId')(target, 'method', 3);
+            assert((<any>target).$$controllerConfiguration.methodsParameters['method'][0]);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].index, 3);
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].name, 'sessiondId');
+            assert.equal((<any>target).$$controllerConfiguration.methodsParameters['method'][0].type, ParameterType.COOKIE_PARAMETER);
+        })
+    });
+
     describe ('@Controller', () => {
 
         it ('should add route information and try to apply it', () => {
