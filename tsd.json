@@ -19,6 +19,9 @@
     },
     "sinon/sinon.d.ts": {
       "commit": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
+    },
+    "cookie-parser/cookie-parser.d.ts": {
+      "commit": "b04ad99e8b389bf377a2bd3ae582e7ecb553c09a"
     }
   }
 }

@@ -30,6 +30,7 @@
         "./test/util.spec.ts",
         "./typings/bluebird/bluebird.d.ts",
         "./typings/body-parser/body-parser.d.ts",
+        "./typings/cookie-parser/cookie-parser.d.ts",
         "./typings/express/express.d.ts",
         "./typings/mocha/mocha.d.ts",
         "./typings/node/node.d.ts",
