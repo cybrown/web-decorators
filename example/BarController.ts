@@ -1,6 +1,6 @@
 import * as express from 'express';
 import {ExpressAdapterData} from '../src/adapters/ExpressAdapter';
-import {Controller, Get, Post, Middle, PathParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
+import {Controller, Get, Post, Middle, PathParam, HeaderParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
 
 @Controller('/bar')
 export default class BarController {
@@ -15,7 +15,8 @@ export default class BarController {
     }
 
     @Get()
-    index() {
+    index(@HeaderParam('Host') host: string) {
+        console.log(host);
         return 'ok decorator';
     }
 
