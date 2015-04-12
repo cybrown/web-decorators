@@ -201,7 +201,7 @@ describe('Internal', () => {
                 }
             };
             const adapterRequestData = {key: 'value'};
-            internal.createParameterList(adapter, config, 'hello', adapterRequestData);
+            internal.createParameterList(adapter, config, 'hello', adapterRequestData, function () {});
             assert(getParameterWithConfigSpy.calledTwice);
             assert(getParameterWithConfigSpy.calledWith(paramConfig1, adapterRequestData));
             assert(getParameterWithConfigSpy.calledWith(paramConfig2, adapterRequestData));
@@ -227,7 +227,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             assert(totoSpy.calledOn(controller));
             assert(totoSpy.calledOnce);
             assert(sendSpy.calledOnce);
@@ -254,7 +254,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             setTimeout(() => {
                 asyncPromiseResult.then(() => {
                     assert(totoSpy.calledOn(controller));
@@ -288,7 +288,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             setTimeout(() => {
                 assert(totoSpy.calledOn(controller));
                 assert(totoSpy.calledOnce);
@@ -317,7 +317,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             assert(totoSpy.calledOn(controller));
             assert(totoSpy.calledOnce);
             assert(sendJsonSpy.calledOnce);
@@ -345,7 +345,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             assert(totoSpy.calledOn(controller));
             assert(totoSpy.calledOnce);
             assert(sendSpy.calledOnce);
@@ -372,7 +372,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             setTimeout(() => {
                 asyncPromiseResult.body.then(() => {
                     assert(totoSpy.calledOn(controller));
@@ -412,13 +412,12 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             setTimeout(() => {
                 assert(totoSpy.calledOn(controller));
                 assert(totoSpy.calledOnce);
                 assert(sendSpy.calledOnce);
                 assert(sendSpy.calledWith(302, 'async result', adapterRequestData, sinon.match(value => {
-                    console.log(value);
                     return value.length === 1 &&
                         value[0].field === 'Content-Type' &&
                         value[0].value === 'application/json';
@@ -447,7 +446,7 @@ describe('Internal', () => {
             };
             const handlerName = 'toto';
             const adapterRequestData = {key: 'adapter'};
-            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            internal.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData, function () {});
             assert(totoSpy.calledOn(controller));
             assert(totoSpy.calledOnce);
             assert(sendJsonSpy.calledOnce);

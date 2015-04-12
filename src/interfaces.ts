@@ -47,7 +47,7 @@ export interface IQueryParameter extends IParameterConfiguration {
 
 export interface IAdapter {
     setWebDecoratorApi(api: IWebDecoratorApi);
-    addMiddleware(path: string, controller: any, handler: Function);
+    addMiddleware(configuration: IControllerConfiguration, path: string, controller: any, handlerName: string, handler: Function);
     addRoute(configuration: IControllerConfiguration, method: string, path: string, controller: any, methodName: string, handler: Function);
     getParameterWithConfig (paramConfig: IParameterConfiguration, adapterRequestData: any);
     send(statusCode: number, data: any, adapterRequestData: any, headers?: Header[]);
@@ -67,6 +67,6 @@ export interface IObjectWithControllerConfiguration {
 }
 
 export interface IWebDecoratorApi {
-    callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any);
+    callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any, next: Function);
     applyConfiguration (adapter: IAdapter, cls: IControllerClass);
 }

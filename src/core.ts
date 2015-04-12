@@ -61,8 +61,8 @@ export class DecoratedAppBootstraper {
 
 export class WebDecoratorApi implements IWebDecoratorApi {
 
-    callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
-        return internal.callRequestHandler(adapter, handler, controller, configuration, handlerName, adapterRequestData);
+    callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any, next: Function) {
+        return internal.callRequestHandler(adapter, handler, controller, configuration, handlerName, adapterRequestData, next);
     }
 
     applyConfiguration (adapter: IAdapter, cls: IControllerClass) {

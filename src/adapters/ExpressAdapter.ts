@@ -28,7 +28,7 @@ export default class ExpressAdapter implements IAdapter {
     addRoute(configuration: IControllerConfiguration, method: string, path: string, controller: any, handlerName: string, handler: Function) {
         console.log(`Add route: ${method} ${path}`);
         this.app[method](path, (req, res, next) => {
-            return this._webDecoratorApi.callRequestHandler(this, handler, controller, configuration, handlerName, {req, res});
+            return this._webDecoratorApi.callRequestHandler(this, handler, controller, configuration, handlerName, {req, res}, next);
         });
     }
 

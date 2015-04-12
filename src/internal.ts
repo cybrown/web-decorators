@@ -61,18 +61,19 @@ export function methodDecoratorFactory(method: string): (path?: string) => Metho
     }
 }
 
-export function createParameterList(adapter: IAdapter, config: IControllerConfiguration, methodName: string, adapterRequestData: any) {
+export function createParameterList(adapter: IAdapter, config: IControllerConfiguration, methodName: string, adapterRequestData: any, next: Function) {
     const parameters = [];
     if (config.methodsParameters[methodName]) {
         config.methodsParameters[methodName].forEach(paramConfig => {
             parameters[paramConfig.index] = adapter.getParameterWithConfig(paramConfig, adapterRequestData);
         });
     }
+    parameters.push(next);
     return parameters;
 }
 
-export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
-    const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData));
+export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any, next: Function) {
+    const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData, next));
     if (result != null) {
         callSendMethod(adapter, handler, wrapInResponseMetadata(result), configuration.sendTypes[handlerName], adapterRequestData);
     }
