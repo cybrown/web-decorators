@@ -1,6 +1,42 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType} from './interfaces';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType, Header} from './interfaces';
 import {createPathWithRoot} from './internal';
-import {unwrapAsyncValue} from './util';
+import {unwrapAsyncValue, Optional} from './util';
+
+export class ResponseMetadata {
+
+    private _statusCode: number;
+    private _headers: Header[] = [];
+    private _body: any;
+
+    get statusCode() {return this._statusCode;}
+    get headers() {return this._headers;}
+    get body() {return this._body;}
+
+    constructor (statusCode: number);
+    constructor (body: any);
+    constructor (statusCode: number, body: any);
+    constructor (statusCodeOrBody: number | any, maybeBody?: any) {
+        if (typeof statusCodeOrBody === 'number') {
+            [this._statusCode, this._body] = [statusCodeOrBody, maybeBody];
+        } else {
+            [this._statusCode, this._body] = [200, statusCodeOrBody];
+        }
+    }
+
+    append(field: string, value: string) {
+        this._headers.push({field, value});
+    }
+
+    replace(field: string, value: string) {
+        this.findHeaderByField(field)
+            .ifPresent(header => header.value = value)
+            .orElse(() => this.append(field, value));
+    }
+
+    private findHeaderByField(field: string): Optional<Header> {
+        return Optional.of(this._headers.filter(header => header.field == field)[0]);
+    }
+}
 
 export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
     addConfiguration(target);
@@ -58,9 +94,15 @@ export function createParameterList(adapter: IAdapter, config: IControllerConfig
 export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
     const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData));
     if (result != null) {
-        unwrapAsyncValue(result, (err, result) => {
-            callSendMethod(adapter, handler, result, configuration.sendTypes[handlerName], adapterRequestData);
-        });
+        callSendMethod(adapter, handler, wrapInResponseMetadata(result), configuration.sendTypes[handlerName], adapterRequestData);
+    }
+}
+
+function wrapInResponseMetadata(value: any) {
+    if (value instanceof ResponseMetadata) {
+        return value;
+    } else {
+        return new ResponseMetadata(200, value);
     }
 }
 
@@ -83,12 +125,14 @@ export class DecoratedAppBootstraper {
     }
 }
 
-function callSendMethod(adapter: IAdapter, handler: Function, result: any, sendType: SendType, adapterRequestData: any) {
-    switch (sendType) {
-        case SendType.JSON:
-            adapter.sendJson(result, adapterRequestData);
-            break;
-        default:
-            adapter.send(result, adapterRequestData);
-    }
+function callSendMethod(adapter: IAdapter, handler: Function, response: ResponseMetadata, sendType: SendType, adapterRequestData: any) {
+    unwrapAsyncValue(response.body, (err, body) => {
+        switch (sendType) {
+            case SendType.JSON:
+                adapter.sendJson(response.statusCode, body, adapterRequestData, response.headers);
+                break;
+            default:
+                adapter.send(response.statusCode, body, adapterRequestData, response.headers);
+        }
+    });
 }

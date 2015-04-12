@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {IAdapter, IControllerConfiguration, ParameterType, IParameterConfiguration, IPathParameter, IQueryParameter} from '../interfaces';
+import {IAdapter, IControllerConfiguration, ParameterType, IParameterConfiguration, IPathParameter, IQueryParameter, Header} from '../interfaces';
 import {createParameterList, callRequestHandler} from '../core';
 
 export interface ExpressAdapterData {
@@ -50,11 +50,17 @@ export default class ExpressAdapter implements IAdapter {
         }
     }
 
-    send (data: any, expressAdapterData: ExpressAdapterData) {
-        expressAdapterData.res.send(data);
+    send (statusCode: number, data: any, expressAdapterData: ExpressAdapterData, headers?: Header[]) {
+        headers && headers.forEach(header => {
+            expressAdapterData.res.set(header.field, header.value);
+        });
+        expressAdapterData.res.send(statusCode, data);
     }
 
-    sendJson (data: any, expressAdapterData: ExpressAdapterData) {
-        expressAdapterData.res.json(data);
+    sendJson (statusCode: number, data: any, expressAdapterData: ExpressAdapterData, headers?: Header[]) {
+        headers && headers.forEach(header => {
+            expressAdapterData.res.header(header.field, header.value);
+        });
+        expressAdapterData.res.json(statusCode, data);
     }
 }

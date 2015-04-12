@@ -60,10 +60,27 @@ describe ('ExpressAdapter', () => {
                     send: sendSpy
                 }
             };
-            adapter.send(data, <any>adapterData);
+            adapter.send(200, data, <any>adapterData);
             assert(sendSpy.calledOnce);
-            assert(sendSpy.calledWith(data));
-        })
+            assert(sendSpy.calledWith(200, data));
+        });
+
+        it ('should call set with headers on response', () => {
+            const sendSpy = sinon.spy();
+            const setSpy = sinon.spy();
+            const data = {key: 'data'};
+            const adapterData = {
+                res: {
+                    send: sendSpy,
+                    set: setSpy
+                }
+            };
+            adapter.send(402, data, <any>adapterData, [{field: 'Location', value: 'http://localhost'}]);
+            assert(sendSpy.calledOnce);
+            assert(sendSpy.calledWith(402, data));
+            assert(setSpy.calledOnce);
+            assert(setSpy.calledWith('Location', 'http://localhost'));
+        });
     });
 
     describe ('getParameterWithConfig', () => {
