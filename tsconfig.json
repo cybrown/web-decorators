@@ -11,7 +11,9 @@
     },
     "filesGlob": [
         "./**/*.ts",
-        "!./node_modules/**/*.ts"
+        "!./node_modules/**/*.ts",
+        "!./dist/**/*.ts",
+        "!./lib/**/*.d.ts"
     ],
     "files": [
         "./example/BarController.ts",
