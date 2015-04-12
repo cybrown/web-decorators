@@ -174,7 +174,7 @@ describe ('Core', () => {
         });
     });
 
-    describe ('callRequestHandler', () => {
+    describe ('callRequestHandler with raw body', () => {
 
         it ('should call the request handler of the adapter for a synchronous result', () => {
             const sendSpy = sinon.spy();
@@ -310,6 +310,52 @@ describe ('Core', () => {
                 .start();
             assert(addRouteSpy.calledOnce);
             assert(addMiddlewareSpy.calledOnce);
+        });
+    });
+
+    describe ('ResponseMetadata', () => {
+
+        it ('should create a response with 200 status code', () => {
+            const res = new core.ResponseMetadata('test');
+            assert.equal(res.statusCode, 200);
+            assert.equal(res.body, 'test');
+        });
+
+        it ('should create a reponse with status code and body', () => {
+            const res = new core.ResponseMetadata(404, 'toto');
+            assert.equal(res.statusCode, 404);
+            assert.equal(res.body, 'toto');
+        });
+
+        it ('should create a response with only a status code', () => {
+            const res = new core.ResponseMetadata(500);
+            assert.equal(res.statusCode, 500);
+        });
+
+        it ('should add headers to the response', () => {
+            const res = new core.ResponseMetadata(200);
+            res.append('content-type', 'application/json');
+            assert.equal(res.headers.length, 1);
+            assert.equal(res.headers[0].field, 'content-type');
+            assert.equal(res.headers[0].value, 'application/json');
+        });
+
+        it ('should add multiple headers', () => {
+            const res = new core.ResponseMetadata(200);
+            res.append('content-type', 'application/json');
+            res.append('lang', 'en-EN');
+            assert.equal(res.headers.length, 2);
+            assert.equal(res.headers[0].field, 'content-type');
+            assert.equal(res.headers[0].value, 'application/json');
+        });
+
+        it ('should replace headers to the response', () => {
+            const res = new core.ResponseMetadata(200);
+            res.append('content-type', 'application/json');
+            res.replace('content-type', 'application/xml');
+            assert.equal(res.headers.length, 1);
+            assert.equal(res.headers[0].field, 'content-type');
+            assert.equal(res.headers[0].value, 'application/xml');
         });
     });
 });
