@@ -1,5 +1,5 @@
-import {IAdapter, IControllerClass, IObjectWithControllerConfiguration, IPathParameter, IQueryParameter, ParameterType, SendType} from './interfaces';
-import {addConfiguration, applyConfiguration, addMethodConfiguration, methodDecoratorFactory, parameterDecoratorFactory, parameterDecoratorWithNameFactory} from './core';
+import {IControllerClass, IObjectWithControllerConfiguration, ParameterType, SendType} from './interfaces';
+import {addConfiguration, methodDecoratorFactory, parameterDecoratorFactory, parameterDecoratorWithNameFactory} from './internal';
 
 export function Controller(root: string): ClassDecorator {
 

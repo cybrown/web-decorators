@@ -9,7 +9,7 @@ export default class BarController {
     numberOfRequests = 0;
 
     @Middle()
-    log (req: express.Request, res: express.Response, next: Function) {
+    log (@AdapterParam() {req, res}: ExpressAdapterData, next: Function) {
         console.log(`Request number: ${this.numberOfRequests}`);
         this.numberOfRequests++;
         next();
@@ -67,7 +67,7 @@ export default class BarController {
     }
 
     @Post()
-    post (@BodyParam body: any) {
+    post (@BodyParam() body: any) {
         return body;
     }
 }

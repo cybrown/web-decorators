@@ -1,5 +1,5 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType, Header, ParameterType, IQueryParameter} from './interfaces';
-import {createPathWithRoot} from './internal';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType, Header, ParameterType, IQueryParameter, IWebDecoratorApi} from './interfaces';
+import * as internal from './internal';
 import {unwrapAsyncValue, Optional} from './util';
 
 export class ResponseMetadata {
@@ -40,80 +40,12 @@ export class ResponseMetadata {
     }
 }
 
-export function addMethodConfiguration(target: IObjectWithControllerConfiguration, methodName: string, parameterConfiguration: IParameterConfiguration) {
-    addConfiguration(target);
-    if (!target.$$controllerConfiguration.methodsParameters[methodName]) {
-        target.$$controllerConfiguration.methodsParameters[methodName] = [];
-    }
-    target.$$controllerConfiguration.methodsParameters[methodName].push(parameterConfiguration);
-}
-
-export function applyConfiguration(adapter: IAdapter, cls: IControllerClass) {
-    const configuration = cls.prototype.$$controllerConfiguration;
-    var instance = new cls();
-    configuration.middlewares.forEach(middleware => {
-        adapter.addMiddleware(createPathWithRoot(configuration.root, middleware.path), instance, instance[middleware.handlerName]);
-    });
-    configuration.routes.forEach(route => {
-        adapter.addRoute(configuration, route.method, createPathWithRoot(configuration.root, route.path), instance, route.handlerName, instance[route.handlerName]);
-    });
-}
-
-export function addConfiguration(target: IObjectWithControllerConfiguration) {
-    if (!target.$$controllerConfiguration) {
-        target.$$controllerConfiguration = {
-            routes: [],
-            middlewares: [],
-            adapter: null,
-            root: null,
-            methodsParameters: {},
-            sendTypes: {}
-        }
-    }
-}
-
-export function methodDecoratorFactory(method: string): (path?: string) => MethodDecorator {
-
-    return function (path?: string): MethodDecorator {
-
-        return function (target: IObjectWithControllerConfiguration, handlerName: string, descriptor: TypedPropertyDescriptor<Function>) {
-            addConfiguration(target);
-            target.$$controllerConfiguration.routes.push({method, path, handlerName});
-        };
-    }
-}
-
-export function createParameterList(adapter: IAdapter, config: IControllerConfiguration, methodName: string, adapterRequestData: any) {
-    const parameters = [];
-    if (config.methodsParameters[methodName]) {
-        config.methodsParameters[methodName].forEach(paramConfig => {
-            parameters[paramConfig.index] = adapter.getParameterWithConfig(paramConfig, adapterRequestData);
-        });
-    }
-    return parameters;
-}
-
-export function callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any) {
-    const result = handler.apply(controller, createParameterList(adapter, configuration, handlerName, adapterRequestData));
-    if (result != null) {
-        callSendMethod(adapter, handler, wrapInResponseMetadata(result), configuration.sendTypes[handlerName], adapterRequestData);
-    }
-}
-
-function wrapInResponseMetadata(value: any) {
-    if (value instanceof ResponseMetadata) {
-        return value;
-    } else {
-        return new ResponseMetadata(200, value);
-    }
-}
-
 export class DecoratedAppBootstraper {
 
     controllers: IControllerClass[] = [];
 
-    constructor (protected adapter: IAdapter) {
-
+    constructor (protected adapter: IAdapter, protected webDecoratorApi: IWebDecoratorApi) {
+        adapter.setWebDecoratorApi(webDecoratorApi);
     }
 
     controller (controllerClass: any): DecoratedAppBootstraper {
@@ -122,43 +54,20 @@ export class DecoratedAppBootstraper {
     }
 
     start (): DecoratedAppBootstraper {
-        this.controllers.forEach(controllerClass => applyConfiguration(this.adapter, controllerClass));
+        this.controllers.forEach(controllerClass => this.webDecoratorApi.applyConfiguration(this.adapter, controllerClass));
         return this;
     }
 }
 
-function callSendMethod(adapter: IAdapter, handler: Function, response: ResponseMetadata, sendType: SendType, adapterRequestData: any) {
-    unwrapAsyncValue(response.body, (err, body) => {
-        switch (sendType) {
-            case SendType.JSON:
-                adapter.sendJson(response.statusCode, body, adapterRequestData, response.headers);
-                break;
-            default:
-                adapter.send(response.statusCode, body, adapterRequestData, response.headers);
-        }
-    });
+export class WebDecoratorApi implements IWebDecoratorApi {
+
+    callRequestHandler (adapter: IAdapter, handler: Function, controller: any, configuration: IControllerConfiguration, handlerName: string, adapterRequestData: any, next: Function) {
+        return internal.callRequestHandler(adapter, handler, controller, configuration, handlerName, adapterRequestData, next);
+    }
+
+    applyConfiguration (adapter: IAdapter, cls: IControllerClass) {
+        return internal.applyConfiguration(adapter, cls);
+    }
 }
 
-export function parameterDecoratorFactory(parameterType: ParameterType): () => ParameterDecorator {
-
-    return function(): ParameterDecorator {
-
-        return function (_target: Function, methodName: string, index: number) {
-            // A bug in typescript 1.5.0-alpha, _target should be an Object and not Function
-            const target = <IObjectWithControllerConfiguration><any>_target;
-            addMethodConfiguration(target, methodName, {index, type: parameterType});
-        };
-    };
-}
-
-export function parameterDecoratorWithNameFactory(parameterType: ParameterType): (name: string) => ParameterDecorator {
-
-    return function (name: string): ParameterDecorator {
-
-        return function (_target: Function, methodName: string, index: number) {
-            const target = <IObjectWithControllerConfiguration><any>_target;
-            const parameterInfo: IQueryParameter = {index, name, type: parameterType};
-            addMethodConfiguration(target, methodName, parameterInfo);
-        };
-    };
-}
+export const defaultWebDecoratorApi = new WebDecoratorApi();
