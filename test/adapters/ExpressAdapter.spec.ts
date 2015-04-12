@@ -43,7 +43,7 @@ describe ('ExpressAdapter', () => {
             assert(useSpy.calledWith(sinon.match.func));
         });
 
-        it.only ('should call the parameter injector function', () => {
+        it ('should call the parameter injector function', () => {
             let handler: Function;
             (<any>app).use = (path, _handler) => {
                 handler = _handler;
