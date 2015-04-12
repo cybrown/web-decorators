@@ -144,6 +144,7 @@ export function parameterDecoratorFactory(parameterType: ParameterType): () => P
     return function(): ParameterDecorator {
 
         return function (_target: Function, methodName: string, index: number) {
+            // A bug in typescript 1.5.0-alpha, _target should be an Object and not Function
             const target = <IObjectWithControllerConfiguration><any>_target;
             addMethodConfiguration(target, methodName, {index, type: parameterType});
         };
