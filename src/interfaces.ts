@@ -1,3 +1,8 @@
+export interface Header {
+    field: string;
+    value: string;
+}
+
 export enum ParameterType {
     PATH_PARAMETER,
     ADAPTER_PARAMETER,
@@ -44,8 +49,8 @@ export interface IAdapter {
     addMiddleware(path: string, controller: any, handler: Function);
     addRoute(configuration: IControllerConfiguration, method: string, path: string, controller: any, methodName: string, handler: Function);
     getParameterWithConfig (paramConfig: IParameterConfiguration, adapterRequestData: any);
-    send(data: any, adapterRequestData: any);
-    sendJson(data: any, adapterRequestData: any);
+    send(statusCode: number, data: any, adapterRequestData: any, headers?: Header[]);
+    sendJson(statusCode: number, data: any, adapterRequestData: any, headers?: Header[]);
 }
 
 export interface IControllerConfiguration {

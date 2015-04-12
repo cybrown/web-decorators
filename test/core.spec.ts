@@ -197,7 +197,7 @@ describe ('Core', () => {
             assert(totoSpy.calledOn(controller));
             assert(totoSpy.calledOnce);
             assert(sendSpy.calledOnce);
-            assert(sendSpy.calledWith('sync result', adapterRequestData));
+            assert(sendSpy.calledWith(200, 'sync result', adapterRequestData));
         });
 
         it ('should call the request handler of the adapter for an asynchronous result with a promise', (done) => {
@@ -226,7 +226,7 @@ describe ('Core', () => {
                     assert(totoSpy.calledOn(controller));
                     assert(totoSpy.calledOnce);
                     assert(sendSpy.calledOnce);
-                    assert(sendSpy.calledWith('async result', adapterRequestData));
+                    assert(sendSpy.calledWith(200, 'async result', adapterRequestData));
                     done();
                 });
             }, 20);
@@ -259,7 +259,7 @@ describe ('Core', () => {
                 assert(totoSpy.calledOn(controller));
                 assert(totoSpy.calledOnce);
                 assert(sendSpy.calledOnce);
-                assert(sendSpy.calledWith('async result', adapterRequestData));
+                assert(sendSpy.calledWith(200, 'async result', adapterRequestData));
                 done();
             }, 20);
         });
@@ -287,7 +287,7 @@ describe ('Core', () => {
             assert(totoSpy.calledOn(controller));
             assert(totoSpy.calledOnce);
             assert(sendJsonSpy.calledOnce);
-            assert(sendJsonSpy.calledWith('sync result', adapterRequestData));
+            assert(sendJsonSpy.calledWith(200, 'sync result', adapterRequestData));
         });
     });
 

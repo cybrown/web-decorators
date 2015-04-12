@@ -1,11 +1,6 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType} from './interfaces';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType, Header} from './interfaces';
 import {createPathWithRoot} from './internal';
 import {unwrapAsyncValue, Optional} from './util';
-
-export interface Header {
-    field: string;
-    value: string;
-}
 
 export class ResponseMetadata {
 
@@ -134,10 +129,10 @@ function callSendMethod(adapter: IAdapter, handler: Function, response: Response
     unwrapAsyncValue(response.body, (err, body) => {
         switch (sendType) {
             case SendType.JSON:
-                adapter.sendJson(body, adapterRequestData);
+                adapter.sendJson(200, body, adapterRequestData);
                 break;
             default:
-                adapter.send(body, adapterRequestData);
+                adapter.send(200, body, adapterRequestData);
         }
     });
 }
