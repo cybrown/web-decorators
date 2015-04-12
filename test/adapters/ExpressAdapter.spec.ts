@@ -53,31 +53,37 @@ describe ('ExpressAdapter', () => {
     describe ('send', () => {
 
         it ('should call send on response', () => {
-            const sendSpy = sinon.spy();
-            const data = {key: 'data'};
             const adapterData = {
-                res: {
-                    send: sendSpy
-                }
+                res: <any>{}
             };
+            const sendSpy = sinon.spy();
+            const statusSpy = sinon.stub().returns(adapterData.res);
+            const data = {key: 'data'};
+            adapterData.res.send = sendSpy;
+            adapterData.res.status = statusSpy;
             adapter.send(200, data, <any>adapterData);
             assert(sendSpy.calledOnce);
-            assert(sendSpy.calledWith(200, data));
+            assert(sendSpy.calledWith(data));
+            assert(statusSpy.calledOnce);
+            assert(statusSpy.calledWith(200));
         });
 
         it ('should call set with headers on response', () => {
+            const adapterData = {
+                res: <any>{}
+            };
             const sendSpy = sinon.spy();
+            const statusSpy = sinon.stub().returns(adapterData.res);
             const setSpy = sinon.spy();
             const data = {key: 'data'};
-            const adapterData = {
-                res: {
-                    send: sendSpy,
-                    set: setSpy
-                }
-            };
+            adapterData.res.send = sendSpy;
+            adapterData.res.set = setSpy;
+            adapterData.res.status = statusSpy;
             adapter.send(402, data, <any>adapterData, [{field: 'Location', value: 'http://localhost'}]);
+            assert(statusSpy.calledOnce);
+            assert(statusSpy.calledWith(402));
             assert(sendSpy.calledOnce);
-            assert(sendSpy.calledWith(402, data));
+            assert(sendSpy.calledWith(data));
             assert(setSpy.calledOnce);
             assert(setSpy.calledWith('Location', 'http://localhost'));
         });

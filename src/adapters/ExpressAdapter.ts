@@ -54,13 +54,13 @@ export default class ExpressAdapter implements IAdapter {
         headers && headers.forEach(header => {
             expressAdapterData.res.set(header.field, header.value);
         });
-        expressAdapterData.res.send(statusCode, data);
+        expressAdapterData.res.status(statusCode).send(data);
     }
 
     sendJson (statusCode: number, data: any, expressAdapterData: ExpressAdapterData, headers?: Header[]) {
         headers && headers.forEach(header => {
             expressAdapterData.res.header(header.field, header.value);
         });
-        expressAdapterData.res.json(statusCode, data);
+        expressAdapterData.res.status(statusCode).json(data);
     }
 }
