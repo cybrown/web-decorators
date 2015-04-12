@@ -2,16 +2,23 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as express from 'express';
 import ExpressAdapter from '../../src/adapters/ExpressAdapter';
-import {ParameterType} from '../../src/interfaces';
+import {ParameterType, IWebDecoratorApi} from '../../src/interfaces';
+import {callRequestHandler} from '../../src/internal';
 
 describe ('ExpressAdapter', () => {
 
     let app: express.Express;
     let adapter: ExpressAdapter;
+    let webDecoratorApi: IWebDecoratorApi;
 
     beforeEach(() => {
         app = <any>{};
+        webDecoratorApi = {
+            callRequestHandler: callRequestHandler,
+            applyConfiguration: function () {}
+        };
         adapter = new ExpressAdapter(app);
+        adapter.setWebDecoratorApi(webDecoratorApi);
     });
 
     describe ('addMiddleware', () => {
@@ -47,6 +54,26 @@ describe ('ExpressAdapter', () => {
             adapter.addRoute(configuration, 'get', '/path', controller, 'index', function () {});
             assert(getSpy.calledOnce);
             assert(getSpy.calledWith('/path', sinon.match.func));
+        });
+
+        it ('should call the parameter injector function', () => {
+            let handler;
+            (<any>app).get = (path, _handler) => {
+                handler = _handler;
+            };
+            const configuration = {
+                routes: []
+            };
+            const controller = {
+                index() {
+
+                }
+            };
+            const callRequestHandlerSpy = sinon.spy();
+            webDecoratorApi.callRequestHandler = callRequestHandlerSpy;
+            adapter.addRoute(<any>configuration, 'get', '/', controller, 'index', controller.index);
+            handler();
+            assert(callRequestHandlerSpy.calledOnce);
         });
     });
 
