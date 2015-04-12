@@ -22,6 +22,9 @@
     },
     "cookie-parser/cookie-parser.d.ts": {
       "commit": "b04ad99e8b389bf377a2bd3ae582e7ecb553c09a"
+    },
+    "bluebird/bluebird.d.ts": {
+      "commit": "b0056383b51495b373a32b791de8112fcafe2ace"
     }
   }
 }
