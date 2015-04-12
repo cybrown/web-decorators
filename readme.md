@@ -44,7 +44,7 @@ The result can be directly returned with a return statement, or a promise can be
 @Middle(path?): Set a middleware on path.
 If @Route is used on the controller, both are concatenated.
 
-@PathParam(name), @QueryParam(name), @BodyParam(): Define a handler parameter to receive data from the request path parameters, query string or body.
+@PathParam(name), @QueryParam(name), @BodyParam(), @HeaderParam(), @CookieParam(): Define a handler parameter to receive data from the request path parameters, query string or body.
 
 @AdapterParam(): Define a handler parameter as an object defined by the backend implementation, with express, this object contains res as the http response and req as the http request.
 
@@ -56,6 +56,8 @@ The API can use any class implementing the IAdapter interface, the express adapt
 An adapter must provide the following methods:
  - addMiddleware: add a middleware, optionally on a specific path
  - addRoute: register an handler on a specific method and path
- - send: send raw data to the client
- - sendJson: send data as json to the client
+ - send: send raw data to the client, with status code and headers
+ - sendJson: send data as json to the client, with status code and headers
  - getParameterWithConfig: extract a parameter (from query string, path param...) with the provided configuration
+
+The backend is free to use any kind of request and response shape, so it does not assume that something like node's http request and response are used.
