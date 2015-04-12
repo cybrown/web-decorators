@@ -1,4 +1,4 @@
-import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType, Header} from './interfaces';
+import {IControllerClass, IObjectWithControllerConfiguration, IControllerConfiguration, IParameterConfiguration, IAdapter, SendType, Header, ParameterType, IQueryParameter} from './interfaces';
 import {createPathWithRoot} from './internal';
 import {unwrapAsyncValue, Optional} from './util';
 
@@ -137,4 +137,27 @@ function callSendMethod(adapter: IAdapter, handler: Function, response: Response
                 adapter.send(response.statusCode, body, adapterRequestData, response.headers);
         }
     });
+}
+
+export function parameterDecoratorFactory(parameterType: ParameterType): () => ParameterDecorator {
+
+    return function(): ParameterDecorator {
+
+        return function (_target: Function, methodName: string, index: number) {
+            const target = <IObjectWithControllerConfiguration><any>_target;
+            addMethodConfiguration(target, methodName, {index, type: parameterType});
+        };
+    };
+}
+
+export function parameterDecoratorWithNameFactory(parameterType: ParameterType): (name: string) => ParameterDecorator {
+
+    return function (name: string): ParameterDecorator {
+
+        return function (_target: Function, methodName: string, index: number) {
+            const target = <IObjectWithControllerConfiguration><any>_target;
+            const parameterInfo: IQueryParameter = {index, name, type: parameterType};
+            addMethodConfiguration(target, methodName, parameterInfo);
+        };
+    };
 }
