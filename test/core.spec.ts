@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as sinon from 'sinon';
 import * as core from '../src/core';
-import {ParameterType, SendType} from '../src/interfaces';
+import {ParameterType, SendType, Header} from '../src/interfaces';
 
 describe ('Core', () => {
 
@@ -288,6 +288,136 @@ describe ('Core', () => {
             assert(totoSpy.calledOnce);
             assert(sendJsonSpy.calledOnce);
             assert(sendJsonSpy.calledWith(200, 'sync result', adapterRequestData));
+        });
+    });
+
+    describe ('callRequestHandler with ResponseMetadata', () => {
+
+        it ('should call the request handler of the adapter for a synchronous result', () => {
+            const sendSpy = sinon.spy();
+            const adapter = {
+                send: sendSpy
+            };
+            function FooClass() {}
+            const response = new core.ResponseMetadata(302, 'sync result');
+            const totoSpy = sinon.stub().returns(response);
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                },
+                sendTypes: {}
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            assert(totoSpy.calledOn(controller));
+            assert(totoSpy.calledOnce);
+            assert(sendSpy.calledOnce);
+            assert(sendSpy.calledWith(302, 'sync result', adapterRequestData));
+        });
+
+        it ('should call the request handler of the adapter for an asynchronous result with a promise', (done) => {
+            const sendSpy = sinon.spy();
+            const adapter = {
+                send: sendSpy
+            };
+            function FooClass() {}
+            const asyncPromiseResult = new core.ResponseMetadata(new Promise((resolve: (a: any) => void, reject) => {
+                resolve('async result');
+            }));
+            const totoSpy = sinon.stub().returns(asyncPromiseResult);
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                },
+                sendTypes: {}
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            setTimeout(() => {
+                asyncPromiseResult.body.then(() => {
+                    assert(totoSpy.calledOn(controller));
+                    assert(totoSpy.calledOnce);
+                    assert(sendSpy.calledOnce);
+                    assert(sendSpy.calledWith(200, 'async result', adapterRequestData));
+                    done();
+                });
+            }, 20);
+        });
+
+        it ('should call the request handler of the adapter for an asynchronous result with a thunk', (done) => {
+            const sendSpy = sinon.spy();
+            const adapter = {
+                send: sendSpy
+            };
+            function FooClass() {}
+            const asyncPromiseResult = (cb: (err, result) => void) => {
+                setTimeout(() => {
+                    cb(null, 'async result');
+                });
+            };
+            const response = new core.ResponseMetadata(302, asyncPromiseResult);
+            const headers: Header[] = [{
+                field: 'Content-Type',
+                value: 'application/json'
+            }];
+            response.append('Content-Type', 'application/json');
+            const totoSpy = sinon.stub().returns(response);
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                },
+                sendTypes: {}
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            setTimeout(() => {
+                assert(totoSpy.calledOn(controller));
+                assert(totoSpy.calledOnce);
+                assert(sendSpy.calledOnce);
+                assert(sendSpy.calledWith(302, 'async result', adapterRequestData, sinon.match(value => {
+                    console.log(value);
+                    return value.length === 1 &&
+                        value[0].field === 'Content-Type' &&
+                        value[0].value === 'application/json';
+                })));
+                done();
+            }, 20);
+        });
+
+        it ('should call the json send method if the method is decorated with @SendJson', () => {
+            const sendJsonSpy = sinon.spy();
+            const adapter = {
+                sendJson: sendJsonSpy
+            };
+            function FooClass() {}
+            const response = new core.ResponseMetadata(400, 'sync result');
+            const totoSpy = sinon.stub().returns(response);
+            FooClass.prototype.toto = totoSpy;
+            const controller = new FooClass();
+            const configuration = {
+                methodsParameters: {
+                    toto: []
+                },
+                sendTypes: {
+                    toto: SendType.JSON
+                }
+            };
+            const handlerName = 'toto';
+            const adapterRequestData = {key: 'adapter'};
+            core.callRequestHandler(<any>adapter, totoSpy, controller, <any>configuration, handlerName, adapterRequestData);
+            assert(totoSpy.calledOn(controller));
+            assert(totoSpy.calledOnce);
+            assert(sendJsonSpy.calledOnce);
+            assert(sendJsonSpy.calledWith(400, 'sync result', adapterRequestData));
         });
     });
 

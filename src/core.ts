@@ -129,10 +129,10 @@ function callSendMethod(adapter: IAdapter, handler: Function, response: Response
     unwrapAsyncValue(response.body, (err, body) => {
         switch (sendType) {
             case SendType.JSON:
-                adapter.sendJson(200, body, adapterRequestData);
+                adapter.sendJson(response.statusCode, body, adapterRequestData, response.headers);
                 break;
             default:
-                adapter.send(200, body, adapterRequestData);
+                adapter.send(response.statusCode, body, adapterRequestData, response.headers);
         }
     });
 }
