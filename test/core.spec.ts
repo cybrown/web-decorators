@@ -487,5 +487,15 @@ describe ('Core', () => {
             assert.equal(res.headers[0].field, 'content-type');
             assert.equal(res.headers[0].value, 'application/xml');
         });
+
+        it ('should return this after append', () => {
+            const res = new core.ResponseMetadata(200);
+            assert.equal(res.append('a', 'b'), res);
+        });
+
+        it ('should return this after replace', () => {
+            const res = new core.ResponseMetadata(200);
+            assert.equal(res.replace('a', 'b'), res);
+        });
     });
 });

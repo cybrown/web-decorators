@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {ExpressAdapterData} from '../src/adapters/ExpressAdapter';
 import {Controller, Get, Post, Middle, PathParam, HeaderParam, CookieParam, AdapterParam, BodyParam, QueryParam, SendJson} from '../src/decorators';
+import {ResponseMetadata} from '../src/core';
 
 @Controller('/bar')
 export default class BarController {
@@ -17,7 +18,17 @@ export default class BarController {
     @Get()
     index(@HeaderParam('Host') host: string) {
         console.log(host);
-        return 'ok decorator';
+        return new ResponseMetadata('ok decorator');
+    }
+
+    @Get('/redir')
+    redirect() {
+        return new ResponseMetadata(302).append('Location', '/bar/redir-target');
+    }
+
+    @Get('/redir-target')
+    redirectTarget(@HeaderParam('referer') referer: string) {
+        return new ResponseMetadata(200, 'Redirect OK !');
     }
 
     @Get('/raw')
