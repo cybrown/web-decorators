@@ -67,7 +67,7 @@ export default class BarController {
     }
 
     @Post()
-    post (@BodyParam body: any) {
+    post (@BodyParam() body: any) {
         return body;
     }
 }
