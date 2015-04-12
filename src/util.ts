@@ -1,6 +1,6 @@
 import * as Promise from 'bluebird';
 
-export function unwrapAsyncValue(value: any, cb: (err: any, value: any) => void) {
+export function unwrapAsyncValue<T>(value: any, cb: (err: any, value: T) => void) {
     Promise.join(value, unwrappedValue => {
         if (typeof unwrappedValue === 'function') {
             unwrappedValue(cb);
