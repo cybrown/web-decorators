@@ -25,12 +25,14 @@ export class ResponseMetadata {
 
     append(field: string, value: string) {
         this._headers.push({field, value});
+        return this;
     }
 
     replace(field: string, value: string) {
         this.findHeaderByField(field)
             .ifPresent(header => header.value = value)
             .orElse(() => this.append(field, value));
+        return this;
     }
 
     private findHeaderByField(field: string): Optional<Header> {
