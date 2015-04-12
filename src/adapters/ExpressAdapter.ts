@@ -16,12 +16,16 @@ export default class ExpressAdapter implements IAdapter {
         this._webDecoratorApi = webDecoratorApi;
     }
 
-    addMiddleware(path: string, controller: any, handler: Function) {
+    addMiddleware(configuration: IControllerConfiguration, path: string, controller: any, handlerName: string, handler: Function) {
         console.log(`Add middleware: ${path}`);
         if (path) {
-            this.app.use(path, (req, res, next) => handler.call(controller, req, res, next));
+            this.app.use(path, (req, res, next) => {
+                return this._webDecoratorApi.callRequestHandler(this, handler, controller, configuration, handlerName, {req, res}, next);
+            });
         } else {
-            this.app.use((req, res, next) => handler.call(controller, req, res, next));
+            this.app.use((req, res, next) => {
+                return this._webDecoratorApi.callRequestHandler(this, handler, controller, configuration, handlerName, {req, res}, next);
+            });
         }
     }
 

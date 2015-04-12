@@ -30,7 +30,7 @@ export function applyConfiguration(adapter: IAdapter, cls: IControllerClass) {
     const configuration = cls.prototype.$$controllerConfiguration;
     var instance = new cls();
     configuration.middlewares.forEach(middleware => {
-        adapter.addMiddleware(createPathWithRoot(configuration.root, middleware.path), instance, instance[middleware.handlerName]);
+        adapter.addMiddleware(configuration, createPathWithRoot(configuration.root, middleware.path), instance, middleware.handlerName, instance[middleware.handlerName]);
     });
     configuration.routes.forEach(route => {
         adapter.addRoute(configuration, route.method, createPathWithRoot(configuration.root, route.path), instance, route.handlerName, instance[route.handlerName]);

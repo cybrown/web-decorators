@@ -28,7 +28,7 @@ describe ('ExpressAdapter', () => {
             function handler () {};
             const useSpy = sinon.spy();
             app.use = useSpy;
-            adapter.addMiddleware('/path', controller, handler);
+            adapter.addMiddleware(<any>{}, '/path', controller, 'foo', handler);
             assert(useSpy.calledOnce);
             assert(useSpy.calledWith('/path', sinon.match.func));
         });
@@ -38,9 +38,30 @@ describe ('ExpressAdapter', () => {
             function handler () {};
             const useSpy = sinon.spy();
             app.use = useSpy;
-            adapter.addMiddleware(undefined, controller, handler);
+            adapter.addMiddleware(<any>{}, undefined, controller, 'foo', handler);
             assert(useSpy.calledOnce);
             assert(useSpy.calledWith(sinon.match.func));
+        });
+
+        it.only ('should call the parameter injector function', () => {
+            let handler: Function;
+            (<any>app).use = (path, _handler) => {
+                handler = _handler;
+            };
+            const configuration = {
+                middlewares: []
+            };
+            const controller = {
+                middleware(next: Function) {
+                    console.log(arguments);
+                    next();
+                }
+            };
+            const callRequestHandlerSpy = sinon.spy();
+            webDecoratorApi.callRequestHandler = callRequestHandlerSpy;
+            adapter.addMiddleware(<any>{}, '/', controller, 'middleware', controller.middleware);
+            handler();
+            assert(callRequestHandlerSpy.calledOnce);
         });
     });
 

@@ -139,8 +139,8 @@ describe('Internal', () => {
             FooClass.prototype.$$controllerConfiguration = configuration;
             internal.applyConfiguration(<any>adapter, <any>FooClass);
             assert(addMiddlewareSpy.calledTwice);
-            assert(addMiddlewareSpy.calledWith('/app/root/titi', sinon.match.instanceOf(FooClass), FooClass.prototype.toto));
-            assert(addMiddlewareSpy.calledWith('/app/root/titi2', sinon.match.instanceOf(FooClass), FooClass.prototype.totoGet));
+            assert(addMiddlewareSpy.calledWith(sinon.match.object, '/app/root/titi', sinon.match.instanceOf(FooClass), 'toto', FooClass.prototype.toto));
+            assert(addMiddlewareSpy.calledWith(sinon.match.object, '/app/root/titi2', sinon.match.instanceOf(FooClass), 'totoGet', FooClass.prototype.totoGet));
         });
     });
 
