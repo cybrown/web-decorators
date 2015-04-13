@@ -147,9 +147,7 @@ describe('Internal', () => {
     describe ('addConfiguration', () => {
 
         it ('should set a configuration object', () => {
-            const target = {
-                $$controllerConfiguration: null
-            };
+            const target = <any>{};
             internal.addConfiguration(<any>target);
             assert(target.$$controllerConfiguration);
         });
@@ -161,6 +159,18 @@ describe('Internal', () => {
             };
             internal.addConfiguration(<any>target);
             assert.equal(target.$$controllerConfiguration, reference);
+        });
+
+        it ('should set an own configuration object if one is already on the prototype', () => {
+            const reference = {"ref": "any"};
+            const parentTarget = {
+                $$controllerConfiguration: reference
+            };
+            const target = Object.create(parentTarget);
+            internal.addConfiguration(<any>parentTarget);
+            internal.addConfiguration(<any>target);
+            assert.notEqual(target.$$controllerConfiguration, reference);
+            assert(target.$$controllerConfiguration);
         });
     });
 

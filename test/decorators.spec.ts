@@ -96,6 +96,15 @@ describe ('Decorators', () => {
             decorators.Controller('/path')(target);
             assert.equal(target.prototype.$$controllerConfiguration.root, '/path');
         });
+
+        it ('should add a $$controllerConfiguration per class if inherited', () => {
+            function A() {};
+            function B() {};
+            B.prototype = Object.create(A.prototype);
+            decorators.Controller('/a')(A);
+            decorators.Controller('/b')(B);
+            assert.notEqual(B.prototype.$$controllerConfiguration, A.prototype.$$controllerConfiguration);
+        });
     });
 
     describe ('@Middle', () => {

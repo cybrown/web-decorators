@@ -38,15 +38,20 @@ export function applyConfiguration(adapter: IAdapter, cls: IControllerClass) {
 }
 
 export function addConfiguration(target: IObjectWithControllerConfiguration) {
-    if (!target.$$controllerConfiguration) {
-        target.$$controllerConfiguration = {
-            routes: [],
-            middlewares: [],
-            adapter: null,
-            root: null,
-            methodsParameters: {},
-            sendTypes: {}
-        }
+    if (!target.hasOwnProperty('$$controllerConfiguration')) {
+        Object.defineProperty(target, '$$controllerConfiguration', {
+            value: {
+                routes: [],
+                middlewares: [],
+                adapter: null,
+                root: null,
+                methodsParameters: {},
+                sendTypes: {}
+            },
+            configurable: false,
+            writable: false,
+            enumerable: false
+        });
     }
 }
 
